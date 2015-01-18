@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MoodSync for LIFX</string>
+    <string name="activity_name">MoodSync LIFX</string>
+    <string name="app_name_r"><![CDATA[MoodSync for LIFX<sup><small>®<small></sup>]]></string>
+    <string name="turned_off">Turned off</string>
+    <string name="turned_on">Turned on</string>
+    <string name="more">More at github.com/destil/moodsync</string>
+    <string name="mirroring">The screen is mirroring to LIFX</string>
+    <string name="tap_to_change">Tap to change it</string>
+
+</resources>
