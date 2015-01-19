@@ -1,5 +1,5 @@
 # MoodSync for LIFX®
-Simple app which mirrors screen of Android TV to LIFX® lights.
+Simple app which mirrors the screen of Android TV to LIFX® lights.
 
 ## Install
 [![Get it on Google Play](http://www.android.com/images/brand/get_it_on_play_logo_small.png)](https://play.google.com/store/apps/details?id=cz.destil.moodsync)
@@ -17,7 +17,7 @@ alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
  
 ## Issues, feature requests?
  
-Please add them all to [issues](https://github.com/destil/MoodSync/issues). Pull requests are welcomed!
+Please add them all to [issues](https://github.com/destil/MoodSync/issues). Pull requests are welcome!
  
 ## How to build the code
  
