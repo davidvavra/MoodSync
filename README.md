@@ -26,3 +26,8 @@ Import it to [Android Studio](http://developer.android.com/sdk/index.html) or:
 ```
 ./gradlew assembleDebug
 ```
+
+Author
+-----
+- [David 'Destil' Vávra](http://www.destil.cz)
+- [Follow me on G+](http://google.com/+DavidVávra) to be notified about future versions
