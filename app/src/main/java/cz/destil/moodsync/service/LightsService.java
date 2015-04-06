@@ -62,7 +62,7 @@ public class LightsService extends Service {
         } else if (intent.getAction().equals("STOP")) {
             stop();
         }
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     private void start() {
