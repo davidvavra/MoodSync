@@ -13,4 +13,8 @@ public class Toas {
     public static void t(String text) {
         Toast.makeText(App.get(), text, Toast.LENGTH_LONG).show();
     }
+
+    public static void t(int resId) {
+        t(App.get().getString(resId));
+    }
 }

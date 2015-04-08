@@ -57,8 +57,12 @@ public class MirroringHelper {
 
     public void stop() {
         mMirroring = false;
-        mMediaProjection.stop();
-        mVirtualDisplay.release();
+        if (mMediaProjection!=null) {
+            mMediaProjection.stop();
+        }
+        if (mVirtualDisplay!=null) {
+            mVirtualDisplay.release();
+        }
     }
 
     private VirtualDisplay createVirtualDisplay() {
@@ -116,6 +120,6 @@ public class MirroringHelper {
     }
 
     public interface Listener {
-        public void onBitmapAvailable(Bitmap bitmap);
+        void onBitmapAvailable(Bitmap bitmap);
     }
 }

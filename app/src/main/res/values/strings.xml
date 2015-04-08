@@ -8,5 +8,9 @@
     <string name="more">More at github.com/destil/moodsync</string>
     <string name="mirroring">The screen is mirroring to LIFX</string>
     <string name="tap_to_change">Tap to change it</string>
+    <string name="give_permission">You need to give sharing permission</string>
+    <string name="connecting">Connecting to LIFX lights …</string>
+    <string name="lifx_disconnected">LIFX lights disconnected</string>
+    <string name="no_lights_found">No lights found on this network</string>
 
 </resources>

@@ -6,8 +6,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.squareup.otto.Subscribe;
 
@@ -17,12 +20,13 @@ import butterknife.OnClick;
 import cz.destil.moodsync.R;
 import cz.destil.moodsync.core.App;
 import cz.destil.moodsync.core.Config;
+import cz.destil.moodsync.event.ErrorEvent;
 import cz.destil.moodsync.event.LocalColorEvent;
+import cz.destil.moodsync.event.SuccessEvent;
 import cz.destil.moodsync.light.LightsController;
 import cz.destil.moodsync.light.LocalColorSwitcher;
 import cz.destil.moodsync.light.MirroringHelper;
 import cz.destil.moodsync.service.LightsService;
-import cz.destil.moodsync.util.Toas;
 
 public class MainActivity extends Activity {
 
@@ -30,6 +34,14 @@ public class MainActivity extends Activity {
     LinearLayout vContainer;
     @InjectView(R.id.name)
     TextView vName;
+    @InjectView(R.id.progress_layout)
+    LinearLayout vProgressLayout;
+    @InjectView(R.id.progress_bar)
+    ProgressBar vProgressBar;
+    @InjectView(R.id.progress_text)
+    TextView vProgressText;
+    @InjectView(R.id.control)
+    ToggleButton vButton;
 
     MirroringHelper mMirroring;
     private LocalColorSwitcher mColorSwitcher;
@@ -46,7 +58,7 @@ public class MainActivity extends Activity {
         vContainer.setBackgroundColor(mColorSwitcher.getPreviousColor());
         mLights = LightsController.get();
         mMirroring.init();
-        mLights.init();
+        hideProgress();
     }
 
     @Override
@@ -66,9 +78,6 @@ public class MainActivity extends Activity {
     @OnClick(R.id.control)
     public void controlButtonClicked() {
         if (mMirroring.isRunning()) {
-            Intent intent = new Intent(this, LightsService.class);
-            intent.setAction("STOP");
-            startService(intent);
         } else {
             mMirroring.askForPermission(this);
         }
@@ -80,7 +89,6 @@ public class MainActivity extends Activity {
             return;
         }
         if (resultCode != RESULT_OK) {
-            Toas.t("You need to give sharing permission");
             return;
         }
         mMirroring.permissionGranted(resultCode, data);
