@@ -52,13 +52,12 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+        hideProgress();
         vName.setText(Html.fromHtml(getString(R.string.app_name_r)));
         mMirroring = MirroringHelper.get();
         mColorSwitcher = LocalColorSwitcher.get();
         vContainer.setBackgroundColor(mColorSwitcher.getPreviousColor());
         mLights = LightsController.get();
-        mMirroring.init();
-        hideProgress();
     }
 
     @Override
@@ -78,7 +77,9 @@ public class MainActivity extends Activity {
     @OnClick(R.id.control)
     public void controlButtonClicked() {
         if (mMirroring.isRunning()) {
+            stop();
         } else {
+            showProgress(R.string.connecting);
             mMirroring.askForPermission(this);
         }
     }
@@ -89,6 +90,7 @@ public class MainActivity extends Activity {
             return;
         }
         if (resultCode != RESULT_OK) {
+            showError(R.string.give_permission);
             return;
         }
         mMirroring.permissionGranted(resultCode, data);
@@ -103,5 +105,40 @@ public class MainActivity extends Activity {
         TransitionDrawable trans = new TransitionDrawable(colors);
         vContainer.setBackground(trans);
         trans.startTransition(Config.DURATION_OF_COLOR_CHANGE);
+    }
+
+    @Subscribe
+    public void onError(ErrorEvent event) {
+        showError(event.textRes);
+    }
+
+    @Subscribe
+    public void onSuccess(SuccessEvent event) {
+        hideProgress();
+    }
+
+    private void stop() {
+        Intent intent = new Intent(this, LightsService.class);
+        intent.setAction("STOP");
+        startService(intent);
+    }
+
+    private void showProgress(int textResId) {
+        vProgressLayout.setVisibility(View.VISIBLE);
+        vProgressBar.setVisibility(View.VISIBLE);
+        vProgressText.setText(textResId);
+        vButton.setVisibility(View.GONE);
+    }
+
+    private void hideProgress() {
+        vProgressLayout.setVisibility(View.GONE);
+        vButton.setVisibility(View.VISIBLE);
+    }
+
+    private void showError(int textResId) {
+        vProgressLayout.setVisibility(View.VISIBLE);
+        vProgressBar.setVisibility(View.GONE);
+        vProgressText.setText(textResId);
+        stop();
     }
 }

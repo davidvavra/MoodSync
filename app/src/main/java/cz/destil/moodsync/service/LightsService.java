@@ -98,7 +98,9 @@ public class LightsService extends Service {
             @Override
             public void awoken() {
                 mLights.stop();
-                mMulticastLock.release();
+                if (mMulticastLock != null) {
+                    mMulticastLock.release();
+                }
                 stopForeground(true);
                 stopSelf();
             }

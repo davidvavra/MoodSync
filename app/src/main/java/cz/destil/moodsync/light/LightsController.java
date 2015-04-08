@@ -84,7 +84,9 @@ public class LightsController {
 
     public void stop() {
         mDisconnected = true;
-        mNetworkContext.disconnect();
+        if (mNetworkContext != null && mWorkingFine) {
+            mNetworkContext.disconnect();
+        }
     }
 
     private LFXHSBKColor convertColor(int color) {
