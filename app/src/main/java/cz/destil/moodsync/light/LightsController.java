@@ -27,6 +27,7 @@ public class LightsController {
     private LFXNetworkContext mNetworkContext;
     private boolean mWorkingFine;
     private boolean mDisconnected;
+    private int mPreviousColor = -1;
 
     public static LightsController get() {
         if (sInstance == null) {
@@ -36,8 +37,9 @@ public class LightsController {
     }
 
     public void changeColor(int color) {
-        if (mWorkingFine) {
+        if (mWorkingFine && color != mPreviousColor) {
             mNetworkContext.getAllLightsCollection().setColorOverDuration(convertColor(color), Config.DURATION_OF_COLOR_CHANGE);
+            mPreviousColor = color;
         }
     }
 
@@ -53,7 +55,7 @@ public class LightsController {
 
             @Override
             public void networkContextDidDisconnect(LFXNetworkContext networkContext) {
-                if (!mDisconnected) {
+                if (!mDisconnected && mWorkingFine) {
                     mWorkingFine = false;
                     Toas.t(R.string.lifx_disconnected);
                     App.bus().post(new ErrorEvent(R.string.lifx_disconnected));
@@ -62,9 +64,7 @@ public class LightsController {
 
             @Override
             public void networkContextDidAddTaggedLightCollection(LFXNetworkContext networkContext, LFXTaggedLightCollection collection) {
-                App.bus().post(new SuccessEvent());
-                mWorkingFine = true;
-                mNetworkContext.getAllLightsCollection().setPowerState(LFXTypes.LFXPowerState.ON);
+                startRocking();
             }
 
             @Override
@@ -73,12 +73,18 @@ public class LightsController {
         });
     }
 
+    private void startRocking() {
+        App.bus().post(new SuccessEvent());
+        mWorkingFine = true;
+        mNetworkContext.getAllLightsCollection().setPowerState(LFXTypes.LFXPowerState.ON);
+    }
+
     public void start() {
         mNetworkContext.connect();
         if (!mWorkingFine) {
             new TimeoutTask().start();
         } else {
-            App.bus().post(new SuccessEvent());
+            startRocking();
         }
     }
 
@@ -113,8 +119,10 @@ public class LightsController {
         @Override
         public void postExecute() {
             int numLights = mNetworkContext.getAllLightsCollection().getLights().size();
-            if (numLights == 0) {
+            if (numLights == 0 || mDisconnected) {
                 App.bus().post(new ErrorEvent(R.string.no_lights_found));
+            } else {
+                startRocking();
             }
         }
     }

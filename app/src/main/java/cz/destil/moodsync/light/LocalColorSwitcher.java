@@ -18,9 +18,9 @@ public class LocalColorSwitcher {
             R.color.material_amber, R.color.material_orange, R.color.material_deep_orange, R.color.material_red, R.color.material_pink,
             R.color.material_purple, R.color.material_deep_purple};
     private boolean mRunning = false;
-    private boolean finished = true;
     private int mCurrentColor;
     private int mPreviousColor = COLORS.length - 1;
+    SleepTask mSleepTask;
 
     public static LocalColorSwitcher get() {
         if (sInstance == null) {
@@ -30,36 +30,36 @@ public class LocalColorSwitcher {
     }
 
     public void start() {
-        if (finished) {
-            finished = false;
-            mRunning = true;
-            mCurrentColor = 0;
-            changeColor();
-        }
+        mRunning = true;
+        changeColor();
     }
 
     private void changeColor() {
         if (mRunning) {
-            new SleepTask(Config.DURATION_OF_COLOR_CHANGE, new SleepTask.Listener() {
+            mSleepTask = new SleepTask(Config.DURATION_OF_COLOR_CHANGE, new SleepTask.Listener() {
                 @Override
                 public void awoken() {
-                    App.bus().post(new LocalColorEvent(App.get().getResources().getColor(COLORS[mPreviousColor]),
-                            App.get().getResources().getColor(COLORS[mCurrentColor])));
-                    mPreviousColor = mCurrentColor;
-                    mCurrentColor++;
-                    if (mCurrentColor >= COLORS.length) {
-                        mCurrentColor = 0;
+                    if (mRunning) {
+                        App.bus().post(new LocalColorEvent(App.get().getResources().getColor(COLORS[mPreviousColor]),
+                                App.get().getResources().getColor(COLORS[mCurrentColor])));
+                        mPreviousColor = mCurrentColor;
+                        mCurrentColor++;
+                        if (mCurrentColor >= COLORS.length) {
+                            mCurrentColor = 0;
+                        }
+                        changeColor();
                     }
-                    changeColor();
                 }
-            }).start();
-        } else {
-            finished = true;
+            });
+            mSleepTask.start();
         }
     }
 
     public void stop() {
         mRunning = false;
+        if (mSleepTask != null) {
+            mSleepTask.cancel(true);
+        }
     }
 
     public boolean isRunning() {

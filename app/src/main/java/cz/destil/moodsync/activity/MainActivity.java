@@ -23,7 +23,6 @@ import cz.destil.moodsync.core.Config;
 import cz.destil.moodsync.event.ErrorEvent;
 import cz.destil.moodsync.event.LocalColorEvent;
 import cz.destil.moodsync.event.SuccessEvent;
-import cz.destil.moodsync.light.LightsController;
 import cz.destil.moodsync.light.LocalColorSwitcher;
 import cz.destil.moodsync.light.MirroringHelper;
 import cz.destil.moodsync.service.LightsService;
@@ -45,7 +44,6 @@ public class MainActivity extends Activity {
 
     MirroringHelper mMirroring;
     private LocalColorSwitcher mColorSwitcher;
-    private LightsController mLights;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,21 +55,26 @@ public class MainActivity extends Activity {
         mMirroring = MirroringHelper.get();
         mColorSwitcher = LocalColorSwitcher.get();
         vContainer.setBackgroundColor(mColorSwitcher.getPreviousColor());
-        mLights = LightsController.get();
-    }
-
-    @Override
-    protected void onStart() {
+        vButton.setChecked(mMirroring.isRunning());
         App.bus().register(this);
-        mColorSwitcher.start();
-        super.onStart();
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
+        super.onPause();
         mColorSwitcher.stop();
+    }
+
+    @Override
+    protected void onDestroy() {
         App.bus().unregister(this);
-        super.onStop();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mColorSwitcher.start();
     }
 
     @OnClick(R.id.control)
@@ -139,6 +142,7 @@ public class MainActivity extends Activity {
         vProgressLayout.setVisibility(View.VISIBLE);
         vProgressBar.setVisibility(View.GONE);
         vProgressText.setText(textResId);
+        vButton.setVisibility(View.GONE);
         stop();
     }
 }
