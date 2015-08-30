@@ -28,15 +28,14 @@ import cz.destil.moodsync.core.Config;
  */
 public class MirroringHelper {
 
-    static MirroringHelper sInstance;
-
     public static final int PERMISSION_CODE = 42;
+    static MirroringHelper sInstance;
+    boolean mMirroring = false;
+    ImageReader mImageReader;
     private MediaProjectionManager mProjectionManager;
     private DisplayMetrics mMetrics;
     private MediaProjection mMediaProjection;
     private VirtualDisplay mVirtualDisplay;
-    boolean mMirroring = false;
-    ImageReader mImageReader;
 
     public static MirroringHelper get() {
         if (sInstance == null) {
@@ -57,10 +56,10 @@ public class MirroringHelper {
 
     public void stop() {
         mMirroring = false;
-        if (mMediaProjection!=null) {
+        if (mMediaProjection != null) {
             mMediaProjection.stop();
         }
-        if (mVirtualDisplay!=null) {
+        if (mVirtualDisplay != null) {
             mVirtualDisplay.release();
         }
     }
