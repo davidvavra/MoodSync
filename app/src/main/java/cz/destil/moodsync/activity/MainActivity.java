@@ -14,8 +14,8 @@ import android.widget.ToggleButton;
 
 import com.squareup.otto.Subscribe;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import cz.destil.moodsync.R;
 import cz.destil.moodsync.core.App;
@@ -29,17 +29,17 @@ import cz.destil.moodsync.service.LightsService;
 
 public class MainActivity extends Activity {
 
-    @InjectView(R.id.container)
+    @Bind(R.id.container)
     LinearLayout vContainer;
-    @InjectView(R.id.name)
+    @Bind(R.id.name)
     TextView vName;
-    @InjectView(R.id.progress_layout)
+    @Bind(R.id.progress_layout)
     LinearLayout vProgressLayout;
-    @InjectView(R.id.progress_bar)
+    @Bind(R.id.progress_bar)
     ProgressBar vProgressBar;
-    @InjectView(R.id.progress_text)
+    @Bind(R.id.progress_text)
     TextView vProgressText;
-    @InjectView(R.id.control)
+    @Bind(R.id.control)
     ToggleButton vButton;
 
     MirroringHelper mMirroring;
@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         hideProgress();
         vName.setText(Html.fromHtml(getString(R.string.app_name_r)));
         mMirroring = MirroringHelper.get();
